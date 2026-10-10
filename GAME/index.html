@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            alert("ERRORE JS:\n" + msg + "\nLinea: " + line);
+            return false;
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+            alert("ERRORE ASYNC:\n" + event.reason);
+        });
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Blochnyy - Il tuo sandbox retro in 2D</title>
+    <link rel="icon" type="image/png" href="../assets/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a90e2">
+</head>
+
+<body>
+    <!-- HUD rimosso -->
+
+    <div id="start-screen">
+        <div class="menu-panel">
+            <h1 class="game-title">BLOCHNYY</h1>
+            <p class="game-subtitle">Il tuo sandbox retro in 2D</p>
+            
+            <div id="account-section">
+                <div id="login-view">
+                    <h3 style="font-size: 10px; margin-bottom: 10px;">Accedi</h3>
+                    <div class="input-group">
+                        <input type="email" id="login-email" placeholder="Email" autocomplete="email">
+                        <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+                    </div>
+                    <button id="login-btn">Accedi</button>
+                    <p class="auth-switch">Non hai un account? <span id="show-register" class="text-btn highlight-text">Registrati</span></p>
+                    <button id="anon-login-btn" style="margin-top: 10px; background: #ccc !important; font-size: 10px;">Gioca in anonimo</button>
+                </div>
+
+                <div id="register-view" style="display: none; flex-direction: column; gap: 20px;">
+                    <h3 style="font-size: 10px; margin-bottom: 10px;">Registrati</h3>
+                    <div class="input-group">
+                        <input type="text" id="register-username" placeholder="Nome utente" autocomplete="username">
+                        <input type="email" id="register-email" placeholder="Email" autocomplete="email">
+                        <input type="password" id="register-password" placeholder="Password" autocomplete="new-password">
+                        <input type="password" id="register-password-confirm" placeholder="Conferma Password" autocomplete="new-password">
+                    </div>
+                    <button id="register-btn">Crea account</button>
+                    <p class="auth-switch">Hai già un account? <span id="show-login" class="text-btn highlight-text">Accedi</span></p>
+                </div>
+
+                <div id="profile-view" style="display: none;">
+                    <div class="profile-header">
+                        <h3>Bentornato, <span id="display-username" class="highlight-text">Player</span>!</h3>
+                        <button id="logout-btn" class="text-btn">Esci</button>
+                    </div>
+
+                    <div class="worlds-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <h4 class="worlds-title" style="margin:0;">I tuoi mondi</h4>
+                            <button id="import-world-btn" class="text-btn" style="font-size: 8px; padding: 4px; border: 2px solid #000;">Importa</button>
+                            <input type="file" id="import-world-input" accept=".json" style="display:none;">
+                        </div>
+                        <div id="saved-worlds-list" class="scroll-list"></div>
+                    </div>
+
+                    <div class="new-world-section">
+                        <div class="input-group">
+                            <input type="text" id="world-name" placeholder="Nome Mondo" autocomplete="off">
+                            <input type="text" id="world-seed" placeholder="Seed (opzionale)" autocomplete="off">
+                        </div>
+                        <div class="action-buttons">
+                            <button id="play-btn">Gioca</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="esc-hint">Premi ESC per salvare e uscire</p>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="mobile-controls">
+        <div id="joystick-zone"></div>
+    </div>
+
+    <div id="inventory-sidebar">
+        <div class="sidebar-panel stats-panel">
+            <div class="stat-line">Livello <span id="stat-level" class="highlight">1</span></div>
+            <div class="stat-line">Punteggio <span id="stat-score" class="highlight">0</span></div>
+            <div class="stat-line">HP <span id="stat-hp" class="highlight">10/10</span></div>
+            <div class="stat-line">Energia <span id="stat-energy" class="highlight">100%</span></div>
+            <div class="stat-line">Fame <span id="stat-hunger" class="highlight">0%</span></div>
+            <div class="stat-line">Sete <span id="stat-thirst" class="highlight">0%</span></div>
+        </div>
+
+        <div class="sidebar-panel equipment-panel">
+            <div class="slot equip-slot"><div class="icon icon-6"></div></div>
+            <div class="slot equip-slot"><div class="icon icon-0"></div></div>
+            <div class="slot equip-slot"><div class="icon icon-9"></div></div>
+            <div class="slot equip-slot hand-slot" id="hand-0"><div class="icon icon-4"></div><span class="key-hint">1</span></div>
+            <div class="slot equip-slot"><div class="icon icon-1"></div></div>
+            <div class="slot equip-slot hand-slot" id="hand-1"><div class="icon icon-5"></div><span class="key-hint">3</span></div>
+            <div class="slot equip-slot"><div class="icon icon-7"></div></div>
+            <div class="slot equip-slot"><div class="icon icon-2"></div></div>
+            <div class="slot equip-slot"><div class="icon icon-8"></div></div>
+            <div class="slot equip-slot"><div class="icon icon-7"></div></div>
+            <div class="slot equip-slot"><div class="icon icon-3"></div></div>
+            <div class="slot equip-slot"><div class="icon icon-8"></div></div>
+        </div>
+
+        <div class="sidebar-panel inventory-panel">
+            <div id="inventory-grid"></div>
+        </div>
+    </div>
+
+    <script src="supabase.min.js"></script>
+    <script src="localforage.min.js"></script>
+    
+    <script src="noise.js"></script>
+    <script src="game.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,415 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: #1a1a1a;
+    overflow: hidden;
+    font-family: 'Press Start 2P', cursive;
+    color: #000;
+}
+
+#gameCanvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+#start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000;
+}
+
+/* Rimozione forzata di qualsiasi grafica precedente e applicazione rettangolo beige */
+.sidebar-panel,
+.menu-panel,
+button {
+    background: #F5F5DC !important;
+    background-image: none !important;
+    border: 4px solid #000000 !important;
+    border-image: none !important;
+    border-radius: 0 !important;
+    color: #000;
+}
+
+.menu-panel {
+    width: 95%;
+    max-width: 500px;
+    padding: 40px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.game-title {
+    font-size: 32px;
+    line-height: 1.2;
+    margin-bottom: 5px;
+}
+
+.game-subtitle {
+    font-size: 10px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* =========================================
+   MENU ACCOUNT E MONDI
+   ========================================= */
+
+#login-view,
+#profile-view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #000;
+    padding-bottom: 15px;
+}
+
+.profile-header h3 {
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: left;
+}
+
+.highlight-text {
+    color: #b35900;
+}
+
+.text-btn {
+    background: transparent;
+    border: none;
+    text-decoration: underline;
+    padding: 5px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.text-btn:hover {
+    color: #555;
+    transform: none;
+}
+
+.auth-switch {
+    font-size: 8px;
+    margin-top: 10px;
+    color: #000;
+}
+.auth-switch span {
+    text-decoration: underline;
+}
+
+.worlds-container {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border: 4px solid #000;
+}
+
+.worlds-title {
+    font-size: 10px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.scroll-list {
+    max-height: 160px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 5px;
+}
+
+.scroll-list::-webkit-scrollbar { width: 10px; }
+.scroll-list::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); border-left: 2px solid #000; }
+.scroll-list::-webkit-scrollbar-thumb { background: #000; }
+
+.world-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e0e0e0;
+    padding: 10px;
+    border: 2px solid #000;
+}
+
+.world-info { display: flex; flex-direction: column; gap: 8px; }
+.world-name-display { font-size: 10px; font-weight: bold; }
+.world-seed-display { font-size: 8px; color: #555; }
+.world-actions { display: flex; gap: 5px; }
+
+.icon-btn {
+    padding: 8px;
+    border-width: 4px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn.play { color: #008800; }
+.icon-btn.delete { color: #cc0000; }
+
+.new-world-section { display: flex; flex-direction: column; gap: 15px; margin-top: 5px; }
+.input-group { display: flex; flex-direction: column; gap: 10px; }
+.action-buttons { display: flex; gap: 10px; }
+.action-buttons button { flex: 1; }
+
+/* =========================================
+   INVENTARIO E UI DI GIOCO (DESKTOP)
+   ========================================= */
+
+#inventory-sidebar {
+    position: fixed;
+    top: 0;
+    right: 20px; /* Crea l'asse invisibile a destra */
+    left: auto;
+    width: max-content;
+    height: 100vh;
+    display: none; /* JS lo cambierà in 'flex' */
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente */
+    align-items: center; /* Allinea al centro dell'asse */
+    gap: 15px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.equipment-panel,
+#inventory-grid,
+.stats-panel {
+    pointer-events: auto;
+    position: relative; /* Importante per Flexbox */
+    background: #F5F5DC !important;
+    background-image: none !important;
+    padding: 8px;
+    border-radius: 0 !important;
+    border: 4px solid #000000 !important;
+    color: #000 !important;
+}
+
+.inventory-panel {
+    background: transparent !important;
+    border: none !important;
+}
+
+.stats-panel {
+    font-size: 8px;
+    line-height: 1.6;
+    text-align: center;
+    min-width: 130px;
+}
+
+.equipment-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 40px);
+    gap: 4px;
+    justify-content: center;
+}
+
+#inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 40px);
+    gap: 4px;
+    justify-content: center;
+}
+
+.slot {
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    image-rendering: pixelated;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.slot.active { outline: 3px solid #b35900; z-index: 2; }
+.highlight { font-weight: normal; color: #b35900; }
+.key-hint { position: absolute; top: 2px; left: 4px; font-size: 6px; color: #fff; text-shadow: 1px 1px 0 #000; }
+
+button {
+    padding: 15px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    transition: transform 0.1s;
+}
+
+button:hover { transform: scale(1.05); }
+button:active { transform: scale(0.95); }
+
+input {
+    padding: 12px;
+    border: 3px solid #000;
+    background: #fff;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    outline: none;
+    text-align: center;
+    width: 100%;
+}
+input:focus { border-color: #555; }
+.esc-hint { margin-top: 20px; font-size: 8px; line-height: 1.4; color: #000; text-align: center; }
+
+/* =========================================
+   CONTROLLI MOBILE (BASE)
+   ========================================= */
+
+#mobile-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    display: none;
+}
+
+#joystick-zone {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 3px solid #000;
+    border-radius: 50%;
+    position: relative;
+    touch-action: none;
+}
+
+.joystick-knob {
+    width: 30px;
+    height: 30px;
+    background: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#mobile-action-toggle {
+    display: none;
+}
+
+/* =========================================
+   MEDIA QUERIES - OTTIMIZZAZIONE MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+    .sidebar-panel, .menu-panel, button { border-width: 3px !important; }
+    .menu-panel { padding: 20px 10px; width: 90%; max-height: 95vh; overflow-y: auto; }
+    .game-title { font-size: 18px; margin-bottom: 5px;}
+    .game-subtitle { font-size: 8px; margin-bottom: 10px;}
+    button { padding: 10px; font-size: 10px; }
+    input { padding: 10px; font-size: 10px; }
+    .profile-header h3 { font-size: 10px; }
+    .scroll-list { max-height: 120px; }
+
+    /* Ripristina la sidebar a schermo intero per mobile */
+    #inventory-sidebar { 
+        width: 100vw;
+        height: 100vh;
+        left: 0;
+        right: auto;
+        display: block !important; 
+    }
+
+    /* Ripristina il posizionamento assoluto per le coordinate manuali */
+    .equipment-panel,
+    #inventory-grid,
+    .stats-panel {
+        position: absolute;
+    }
+
+    /* Slot più piccoli */
+    .slot { width: 26px !important; height: 26px !important; }
+
+    /* 1. ATTREZZATURA A SINISTRA */
+    .equipment-panel {
+        top: 10px; 
+        left: 10px;
+        right: auto;
+        transform: none;
+        grid-template-columns: repeat(3, 26px);
+        padding: 4px;
+    }
+
+    /* 2. INDICATORI IN MEZZO IN ALTO */
+    .stats-panel { 
+        top: 10px; 
+        left: 50%; 
+        right: auto;
+        transform: translateX(-50%); 
+        font-size: 6px; 
+        line-height: 1.4; 
+        padding: 4px 6px;
+        min-width: auto;
+        white-space: nowrap; 
+    }
+
+    /* 3. INVENTARIO A DESTRA */
+    #inventory-grid {
+        top: 10px; 
+        right: 10px;
+        left: auto;
+        transform: none;
+        grid-template-columns: repeat(2, 26px); 
+        padding: 4px;
+    }
+
+    .key-hint { display: none; }
+
+    /* Controlli e Joystick in basso più compatti */
+    #mobile-controls { bottom: 15px; left: 15px; }
+    #joystick-zone { width: 55px; height: 55px; border-width: 2px; }
+    .joystick-knob { width: 22px; height: 22px; }
+    
+    /* Pulsante Cambio Mano */
+    #mobile-action-toggle {
+        position: absolute;
+        bottom: 15px;
+        right: 75px;
+        width: 45px; height: 45px;
+        font-size: 16px; border-width: 2px;
+        border-radius: 50%; border: 2px solid #000;
+        z-index: 1000;
+        display: none; justify-content: center; align-items: center;
+        background: rgba(255,255,255,0.2); backdrop-filter: blur(2px);
+        color: #000;
+    }
+
+    /* Pulsante Piazza/Rompi */
+    #mobile-build-toggle {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        width: 50px; height: 50px;
+        border-radius: 50%; border: 2px solid #000;
+        font-size: 20px; z-index: 1000;
+        display: none; justify-content: center; align-items: center;
+        background: rgba(255,255,255,0.2); backdrop-filter: blur(2px);
+        color: #000;
+    }
+}
+
